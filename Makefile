@@ -34,7 +34,8 @@ define xhost_activate
 endef
 
 ROS_ARGS = \
-	uav_name:=$(UAV_NAME)
+	uav_name:=$(UAV_NAME) \
+	headless:=$(HEADLESS)
 
 ifneq ($(CUSTOM_MODELS_FOLDER), '')
 	mount_custom_uav:=--volume=$(CUSTOM_MODELS_FOLDER)/$(UAV_NAME):/root/last_letter_models/models/$(UAV_NAME)

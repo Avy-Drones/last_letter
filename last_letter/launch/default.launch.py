@@ -33,7 +33,6 @@ class MyLocalSubstitution(LocalSubstitution):
 
 
 def generate_launch_description():
-
     # Argument to pass the UAV name.
     uav_name_arg = DeclareLaunchArgument(
         name="uav_name",
@@ -55,6 +54,14 @@ def generate_launch_description():
     logging_config = launch.actions.DeclareLaunchArgument(
         "log_level", default_value=["info"], description="Logging level"
     )
+
+    # Argument to select headless mode.
+    headless_arg = DeclareLaunchArgument(
+        name="headless",
+        default_value="false",
+        description="Run without a GUI.",
+    )
+    headless_value = LaunchConfiguration("headless")
 
     # Process to build the UAV and world models.
     build_model = ExecuteProcess(
@@ -171,6 +178,7 @@ def generate_launch_description():
             uav_name_arg,
             world_file_path_arg,
             logging_config,
+            headless_arg,
         ]
     )
 
@@ -179,12 +187,14 @@ def generate_launch_description():
             last_letter_node,
             px4_interface_node,
             gazebo_server,
-            gazebo_client,
+            # gazebo_client,
             joy2chan_node,
             joystick_driver,
             # rosbag,
         ]
     )
+
+    gui_launch_description = LaunchDescription([gazebo_client])
 
     return LaunchDescription(
         [
@@ -209,6 +219,15 @@ def generate_launch_description():
                             MyLocalSubstitution("event.returncode")
                         ),
                         actions=[main_launch_description],
+                    ),
+                )
+            ),
+            RegisterEventHandler(
+                event_handler=OnProcessExit(
+                    target_action=build_model,
+                    on_exit=GroupAction(
+                        condition=UnlessCondition(headless_value),
+                        actions=[gui_launch_description],
                     ),
                 )
             ),
