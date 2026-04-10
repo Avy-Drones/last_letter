@@ -8,19 +8,19 @@ JoystickNode::JoystickNode() : Node("joystick_node")
         std::bind(&JoystickNode::joy2chan, this, std::placeholders::_1));
     pwm_pub_ = this->create_publisher<last_letter_msgs::msg::SimPWM>("rawPWM", 1);
 
-    this->declare_parameter("throws");
+    this->declare_parameter("throws", std::vector<double>{});
     rclcpp::Parameter throws_param = this->get_parameter("throws");
     throwIndex_ = throws_param.as_double_array();
 
-    this->declare_parameter("axes");
+    this->declare_parameter("axes", std::vector<int64_t>{});
     rclcpp::Parameter axis_param = this->get_parameter("axes");
     axisIndex_ = axis_param.as_integer_array();
 
-    this->declare_parameter("buttons");
+    this->declare_parameter("buttons", std::vector<int64_t>{});
     rclcpp::Parameter buttons_param = this->get_parameter("buttons");
     buttonIndex_ = buttons_param.as_integer_array();
 
-    this->declare_parameter("mixerid");
+    this->declare_parameter("mixerid", 0);
     rclcpp::Parameter mixerid_param = this->get_parameter("mixerid");
     mixerid_ = mixerid_param.as_int();
 }

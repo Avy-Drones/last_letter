@@ -1,4 +1,4 @@
-FROM ros:foxy-ros-base 
+FROM ros:humble-ros-base
 
 ARG INSTALL_PATH=/ros_ws/src/last_letter
 

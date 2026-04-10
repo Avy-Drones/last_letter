@@ -30,14 +30,14 @@ find_package(last_letter_msgs REQUIRED)
 find_package(mavlink REQUIRED)
 find_package(Eigen3 REQUIRED NO_MODULE)
 find_package(iir REQUIRED)
+find_package(yaml-cpp REQUIRED)
 
 # Declare and compile the last_letter_lib project
 include(ExternalProject)
 ExternalProject_Add(ext-last_letter_lib
   SOURCE_DIR ${CMAKE_SOURCE_DIR}/external/last_letter_lib
 
-  # CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=lib/${PROJECT_NAME}
-  CMAKE_ARGS ""
+  CMAKE_ARGS -DCMAKE_BUILD_RPATH_USE_ORIGIN=ON -DCMAKE_BUILD_RPATH=$ORIGIN -DCMAKE_BUILD_TYPE=RelWithDebInfo
   INSTALL_COMMAND "" # Do not install in system, library needed only locally
   USES_TERMINAL_BUILD true
 )
@@ -55,6 +55,7 @@ add_library(last_letter_lib SHARED IMPORTED) # Declare the dynamic library
 set_target_properties(last_letter_lib PROPERTIES
   IMPORTED_LOCATION ${BINARY_DIR}/liblast_letter_lib.so # Attach the .so file to the library
   INTERFACE_INCLUDE_DIRECTORIES "${LAST_LETTER_LIB_INCLUDE_DIR}"
+  INTERFACE_LINK_LIBRARIES yaml-cpp
 )
 
 add_dependencies(last_letter_lib ext-last_letter_lib) # Declare a dependency on the 3rd party project, just in case
@@ -101,6 +102,7 @@ ament_target_dependencies(px4_sitl_interface
   gazebo_msgs
   Eigen3
   message_filters
+  mavlink
 )
 install(TARGETS
   px4_sitl_interface
@@ -122,6 +124,7 @@ add_executable(uav_model_ros src/uav_model_ros.cpp)
 target_link_libraries(uav_model_ros
   iir::iir
   ${LAST_LETTER_LIB_LIBRARIES}
+  yaml-cpp
 )
 ament_target_dependencies(uav_model_ros
   rclcpp

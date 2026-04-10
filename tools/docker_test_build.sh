@@ -3,7 +3,7 @@
 # Run this from the ros workspace source dir
 set -e
 
-BASE_IMAGE=ros:foxy-ros-base
+BASE_IMAGE=ros:humble-ros-base
 echo "*** Building project on docker on image ${BASE_IMAGE}"
 docker run -it --volume=$(pwd):/ros_ws/src ${BASE_IMAGE} bash -c " \\
     cd /ros_ws/src/last_letter && \\

@@ -4,8 +4,8 @@ DETACHED ?= false
 CONTAINER_NAME ?= last_letter_container
 USE_SUDO ?= false
 HEADLESS ?= false
-UAV_NAME ?= skywalker_2013
-CUSTOM_MODELS_FOLDER ?= ''
+UAV_NAME ?= avy_aera_v3
+CUSTOM_MODELS_FOLDER ?= '$(HOME)/last_letter_models/models'
 
 .DEFAULT_GOAL = run
 

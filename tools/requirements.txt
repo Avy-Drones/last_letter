@@ -1,1 +1,4 @@
 pyserial
+pcg_gazebo
+jinja2>=3.0
+markupsafe>=2.0

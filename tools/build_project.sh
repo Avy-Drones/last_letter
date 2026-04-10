@@ -12,7 +12,7 @@ ROS_WS_DIR=$(pwd)
 echo ""
 echo "*** Compiling last_letter"
 cd ${ROS_WS_DIR}
-source /opt/ros/foxy/setup.bash
+source /opt/ros/humble/setup.bash
 export LC_NUMERIC="en_US.UTF-8"
 export LANG="en_US.UTF-8"
 export ROSCONSOLE_FORMAT='[${severity}] [${time}] [${node}]: ${message}'
