@@ -30,6 +30,7 @@ find_package(last_letter_msgs REQUIRED)
 find_package(mavlink REQUIRED)
 find_package(Eigen3 REQUIRED NO_MODULE)
 find_package(iir REQUIRED)
+find_package(yaml-cpp REQUIRED)
 
 # Declare and compile the last_letter_lib project
 include(ExternalProject)
@@ -55,6 +56,7 @@ add_library(last_letter_lib SHARED IMPORTED) # Declare the dynamic library
 set_target_properties(last_letter_lib PROPERTIES
   IMPORTED_LOCATION ${BINARY_DIR}/liblast_letter_lib.so # Attach the .so file to the library
   INTERFACE_INCLUDE_DIRECTORIES "${LAST_LETTER_LIB_INCLUDE_DIR}"
+  INTERFACE_LINK_LIBRARIES "yaml-cpp"
 )
 
 add_dependencies(last_letter_lib ext-last_letter_lib) # Declare a dependency on the 3rd party project, just in case

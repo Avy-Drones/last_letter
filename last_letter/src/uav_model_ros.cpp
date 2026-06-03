@@ -23,6 +23,29 @@ UavModelNode::UavModelNode() : Node("uav_model_node")
     lll::programming_utils::ParameterManager configStruct = lll::programming_utils::loadModelConfig(uavName);
     // Parameter randomization is done internally in loadModelConfig
 
+    this->declare_parameter<double>("lat", 52.167413);
+    this->declare_parameter<double>("lon", 4.416020);
+    this->declare_parameter<double>("alt", 0.0);
+    this->declare_parameter<double>("sim_wind_spd", 0.0);
+    this->declare_parameter<double>("sim_wind_dir", 0.0);
+
+    std::vector<double> coords = {
+        this->get_parameter("lat").as_double(),
+        this->get_parameter("lon").as_double(),
+        this->get_parameter("alt").as_double()};
+    configStruct.set<std::vector<double>>("init/coordinates", coords);
+    RCLCPP_INFO(this->get_logger(),
+                "World origin set to lat=%.9f lon=%.9f alt=%.3f m",
+                coords[0], coords[1], coords[2]);
+
+    double windSpd = this->get_parameter("sim_wind_spd").as_double();
+    double windDir = this->get_parameter("sim_wind_dir").as_double();
+    configStruct.set<double>("env/windRef", windSpd);
+    configStruct.set<double>("env/windDir", windDir);
+    RCLCPP_INFO(this->get_logger(),
+                "Wind set to %.3f m/s from %.1f deg (at env/windRefAlt reference altitude)",
+                windSpd, windDir);
+
     RCLCPP_INFO(this->get_logger(), "Creating new UavModel");
     uavModel = new lll::UavModel(configStruct); // Create a UavStruct by passing the configurations bundle struct
 

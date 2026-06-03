@@ -16,6 +16,7 @@ from launch.substitutions import LaunchConfiguration
 from launch.substitutions import LocalSubstitution
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch_ros.actions import Node
+from launch_ros.parameter_descriptions import ParameterValue
 from ament_index_python.packages import get_package_share_directory
 
 MODELS_FOLDER = os.path.expanduser("~/last_letter_models/")
@@ -63,21 +64,42 @@ def generate_launch_description():
     )
     headless_value = LaunchConfiguration("headless")
 
+    lat_arg = DeclareLaunchArgument(
+        name="lat",
+        default_value="52.167413",
+        description="World origin latitude (degrees).",
+    )
+    lon_arg = DeclareLaunchArgument(
+        name="lon",
+        default_value="4.416020",
+        description="World origin longitude (degrees).",
+    )
+    alt_arg = DeclareLaunchArgument(
+        name="alt",
+        default_value="0.0",
+        description="Spawn altitude and world elevation (m).",
+    )
+    sim_wind_spd_arg = DeclareLaunchArgument(
+        name="sim_wind_spd",
+        default_value="0.0",
+        description="Simulated wind speed at reference altitude (m/s).",
+    )
+    sim_wind_dir_arg = DeclareLaunchArgument(
+        name="sim_wind_dir",
+        default_value="0.0",
+        description="Simulated wind direction (deg, FROM).",
+    )
+
+    speedup_arg = DeclareLaunchArgument(
+        name="speedup",
+        default_value="1.0",
+        description="Simulation speedup.",
+    )
+
     # Process to build the UAV and world models.
     build_model = ExecuteProcess(
-        cmd=[
-            [
-                sys.executable,
-                " ",
-                MODELS_FOLDER,
-                "models/",
-                uav_name_value,
-                "/",
-                uav_name_value,
-                ".py",
-            ]
-        ],
-        shell=True,
+        cmd=[[sys.executable, " ", MODELS_FOLDER, "models/", uav_name_value, "/", uav_name_value, ".py"]],
+        shell=True
     )
 
     # Process to kill Gazebo server.
@@ -129,7 +151,21 @@ def generate_launch_description():
         namespace="",
         executable="uav_model_ros",
         name="uav_model_ros",
-        parameters=[{"use_sim_time": True, "uav_name": uav_name_value}],
+        parameters=[
+            {
+                "use_sim_time": True,
+                "uav_name": uav_name_value,
+                "lat": ParameterValue(LaunchConfiguration("lat"), value_type=float),
+                "lon": ParameterValue(LaunchConfiguration("lon"), value_type=float),
+                "alt": ParameterValue(LaunchConfiguration("alt"), value_type=float),
+                "sim_wind_spd": ParameterValue(
+                    LaunchConfiguration("sim_wind_spd"), value_type=float
+                ),
+                "sim_wind_dir": ParameterValue(
+                    LaunchConfiguration("sim_wind_dir"), value_type=float
+                ),
+            }
+        ],
         arguments=["--ros-args", "--log-level", logger],
         output={"stdout": "screen"},
         # parameters=[{"uav_name": "skywalker"}],
@@ -179,6 +215,12 @@ def generate_launch_description():
             world_file_path_arg,
             logging_config,
             headless_arg,
+            lat_arg,
+            lon_arg,
+            alt_arg,
+            sim_wind_spd_arg,
+            sim_wind_dir_arg,
+            speedup_arg
         ]
     )
 
