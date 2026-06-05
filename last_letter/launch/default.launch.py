@@ -90,12 +90,6 @@ def generate_launch_description():
         description="Simulated wind direction (deg, FROM).",
     )
 
-    speedup_arg = DeclareLaunchArgument(
-        name="speedup",
-        default_value="1.0",
-        description="Simulation speedup.",
-    )
-
     # Process to build the UAV and world models.
     build_model = ExecuteProcess(
         cmd=[[sys.executable, " ", MODELS_FOLDER, "models/", uav_name_value, "/", uav_name_value, ".py"]],
@@ -220,7 +214,6 @@ def generate_launch_description():
             alt_arg,
             sim_wind_spd_arg,
             sim_wind_dir_arg,
-            speedup_arg
         ]
     )
 
