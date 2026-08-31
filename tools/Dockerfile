@@ -19,6 +19,9 @@ RUN cat /environment.sh >> ~/.bashrc
 # Remove the apt cache to reduce image size.
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
+ENV HOME=/root
+RUN chmod -R a+rwX /root
+
 ENTRYPOINT ["/ros_entrypoint.sh"]
 CMD ["ros2 launch last_letter default.launch.py"]
 
